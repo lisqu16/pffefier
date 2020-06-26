@@ -2,6 +2,7 @@ package main
 
 import (
   "fmt"
+  "strings"
   "./config"
   "github.com/bwmarrin/discordgo"
 )
@@ -45,13 +46,19 @@ func main() {
 }
 
 func messageEvent(session *discordgo.Session, msg *discordgo.MessageCreate) {
-  if msg.Author.ID == botId {
-    return
+  if strings.HasPrefix(msg.Content, config.Prefix) {
+    if msg.Author.ID == botId {
+      return
+    }
+
+    Args := strings.Split(msg.Content, " ")
+    Cmd := Args[0];
+
+    if Cmd == config.Prefix + "ping" {
+      _, _ = session.ChannelMessageSend(msg.ChannelID, "Pong :ping_pong:")
+      return
+    }
   }
 
-  if msg.Content == ">ping" {
-    _, _ = session.ChannelMessageSend(msg.ChannelID, "Pong :ping_pong:")
-    return
-  }
 
 }
