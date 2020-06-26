@@ -2,27 +2,35 @@ package main
 
 import (
   "fmt"
+  "./config"
   "github.com/bwmarrin/discordgo"
 )
 
-const token string = ""
 var botId string
+var bot *discordgo.Session
+
 func main() {
-  dg, err := discordgo.New("Bot " + token)
+  err := config.Read()
   if err != nil {
     fmt.Println(err.Error())
     return
   }
 
-  u, err := dg.User("@me")
+  bot, err := discordgo.New("Bot " + config.Token)
+  if err != nil {
+    fmt.Println(err.Error())
+    return
+  }
+
+  u, err := bot.User("@me")
   if err != nil {
     fmt.Println(err.Error())
     return
   }
   botId = u.ID
 
-  dg.AddHandler(messageEvent)
-  err = dg.Open()
+  bot.AddHandler(messageEvent)
+  err = bot.Open()
   if err != nil {
     fmt.Println(err.Error())
     return
@@ -45,4 +53,5 @@ func messageEvent(session *discordgo.Session, msg *discordgo.MessageCreate) {
     _, _ = session.ChannelMessageSend(msg.ChannelID, "Pong :ping_pong:")
     return
   }
+
 }
