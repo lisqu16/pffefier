@@ -7,6 +7,9 @@ import (
   "github.com/bwmarrin/discordgo"
   "database/sql"
   _ "github.com/go-sql-driver/mysql"
+  "strconv"
+  "time"
+  "runtime"
 )
 
 var botId string
@@ -43,6 +46,16 @@ func main() {
 
   fmt.Println(fmt.Sprintf("%d jest online!", botUsername))
 
+  bot.UpdateStatusComplex(discordgo.UpdateStatusData{
+    IdleSince: nil,
+    Game: &discordgo.Game{
+      Name: "jak zrobić commandhandler w go",
+      Type: discordgo.GameTypeWatching,
+    },
+    AFK: false,
+    Status: "",
+  })
+
   connection, err := sql.Open("mysql", config.DBuser+":"+config.DBpassword+"@/"+config.DBname)
   if err != nil {
     fmt.Println(err.Error())
@@ -66,6 +79,38 @@ func messageEvent(session *discordgo.Session, msg *discordgo.MessageCreate) {
 
     if Cmd == config.Prefix + "ping" {
       _, _ = session.ChannelMessageSend(msg.ChannelID, "Pong :ping_pong:")
+      return
+    }
+
+    if Cmd == config.Prefix + "info" {
+      var guilds int = len(session.State.Guilds)
+
+      embed := &discordgo.MessageEmbed{
+        Author: &discordgo.MessageEmbedAuthor{},
+        Color: 0x00add8,
+        Title: "Statystyki 📊",
+        Description: "[🔗 Repo](https://github.com/lisqu16/pffefier)",
+        Fields: []*discordgo.MessageEmbedField{
+          &discordgo.MessageEmbedField{
+            Name: "Serwery",
+            Value: strconv.Itoa(guilds),
+            Inline: false,
+          },
+          &discordgo.MessageEmbedField{
+            Name: "Wersja go",
+            Value: runtime.Version(),
+            Inline: true,
+          },
+          &discordgo.MessageEmbedField{
+            Name: "Wersja discordgo",
+            Value: "v0.21.0",
+            Inline: true,
+          },
+        },
+        Timestamp: time.Now().Format(time.RFC3339),
+      }
+
+      _, _ = session.ChannelMessageSendEmbed(msg.ChannelID, embed)
       return
     }
   }
