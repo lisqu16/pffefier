@@ -5,6 +5,8 @@ import (
   "strings"
   "./config"
   "github.com/bwmarrin/discordgo"
+  "database/sql"
+  _ "github.com/go-sql-driver/mysql"
 )
 
 var botId string
@@ -40,6 +42,14 @@ func main() {
   var botUsername string = u.Username;
 
   fmt.Println(fmt.Sprintf("%d jest online!", botUsername))
+
+  connection, err := sql.Open("mysql", config.DBuser+":"+config.DBpassword+"@/"+config.DBname)
+  if err != nil {
+    fmt.Println(err.Error())
+    return
+  }
+  fmt.Println("Połączono z bazą danych MySQL")
+  defer connection.Close()
 
   <-make(chan struct{})
   return

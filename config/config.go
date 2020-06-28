@@ -7,16 +7,21 @@ import (
 )
 
 var (
-	Token     string
-	Prefix    string
+	Token     	string
+	Prefix    	string
+	DBuser 			string
+	DBpassword 	string
+	DBname			string
 
-	// Private variables
 	config *configStruct
 )
 
 type configStruct struct {
-	Token     string `json:"token"`
-	Prefix    string `json:"prefix"`
+	Token     	string `json:"token"`
+	Prefix    	string `json:"prefix"`
+	DBuser 			string `json:"dbuser"`
+	DBpassword 	string `json:"dbpass"`
+	DBname			string `json:"dbname"`
 }
 
 func Read() error {
@@ -37,6 +42,9 @@ func Read() error {
 
 	Token = config.Token
 	Prefix = config.Prefix
+	DBuser = config.DBuser
+	DBpassword = config.DBpassword
+	DBname = config.DBname
 
 	return nil
 }

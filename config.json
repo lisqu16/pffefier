@@ -1,4 +1,7 @@
 {
   "token":"",
-  "prefix":">"
+  "prefix":">",
+  "dbuser":"pffefier",
+  "dbpass":"12345",
+  "dbname":"pffefier"
 }
